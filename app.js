@@ -38,12 +38,6 @@ const imageRoutes = require("./api/routes/images");
 // Routes
 app.use("/images", imageRoutes);
 
-app.get('/', (req, res) => {
-    res.json({
-        pw: process.env.MONGO_ATLAS_PW
-    })
-})
-
 app.use((req, res, next) => {
   const error = new Error("Not found");
   error.status = 404;
