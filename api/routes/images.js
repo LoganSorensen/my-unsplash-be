@@ -3,13 +3,23 @@ const mongoose = require("mongoose");
 
 const Image = require("../models/image");
 
+const checkAuth = (req, res, next) => {
+  console.log("look at me!", req.body);
+  if (req.body.password === process.env.IMAGE_DELETE_PW) {
+    console.log("auth success!");
+    next();
+  } else {
+    console.log("auth failed!");
+    res.status(401).json({ errorMessage: "Auth failed" });
+  }
+};
+
 // Get All Images
 router.get("/", (req, res, next) => {
   Image.find()
     .select("_id name url")
     .exec()
     .then((docs) => {
-      console.log(docs)
       res.status(200).json(docs.reverse());
     })
     .catch((err) => {
@@ -35,7 +45,7 @@ router.post("/", (req, res, next) => {
         console.log(result);
         res.status(201).json({
           message: "Image saved",
-          image: image
+          image: image,
         });
       })
       .catch((err) => {
@@ -68,7 +78,7 @@ router.get("/:imageId", (req, res, next) => {
 });
 
 // Delete Image
-router.delete("/:imageId", (req, res, next) => {
+router.delete("/:imageId", checkAuth, (req, res, next) => {
   const id = req.params.imageId;
 
   Image.remove({ _id: id })
