@@ -9,7 +9,8 @@ router.get("/", (req, res, next) => {
     .select("_id name url")
     .exec()
     .then((docs) => {
-      res.status(200).json(docs);
+      console.log(docs)
+      res.status(200).json(docs.reverse());
     })
     .catch((err) => {
       console.log(err);
@@ -25,18 +26,23 @@ router.post("/", (req, res, next) => {
     url: req.body.url,
   });
 
-  image
-    .save()
-    .then((result) => {
-      console.log(result);
-      res.status(201).json({
-        message: "Image saved",
+  if (!req.body.name || !req.body.url) {
+    res.status(400).json({ errorMessage: "Please include a name and url" });
+  } else {
+    image
+      .save()
+      .then((result) => {
+        console.log(result);
+        res.status(201).json({
+          message: "Image saved",
+          image: image
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: err });
       });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: err });
-    });
+  }
 });
 
 // Get Image by ID
