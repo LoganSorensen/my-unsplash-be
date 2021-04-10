@@ -6,10 +6,8 @@ const Image = require("../models/image");
 const checkAuth = (req, res, next) => {
   console.log("look at me!", req.body);
   if (req.body.password === process.env.IMAGE_DELETE_PW) {
-    console.log("auth success!");
     next();
   } else {
-    console.log("auth failed!");
     res.status(401).json({ errorMessage: "Auth failed" });
   }
 };
